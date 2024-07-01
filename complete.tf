@@ -1,4 +1,4 @@
-terraform {
+ terraform {
   required_providers {
     tfe = {
       version = "~> 0.54.0"
@@ -43,6 +43,33 @@ output "Your_Workspace_configured" {
 
 output "prefix" {
   value = random_string.pre.result
+}
+
+# Define a Terraform Cloud/Enterprise agent pool
+resource "tfe_agent_pool" "next-agent-pool" {
+  # Specifies the name of the agent pool
+  name                 = "next-pool"
+  
+  # Specifies the organization to which the agent pool belongs
+  organization         = tfe_organization.Org.name
+  
+  # Indicates whether the agent pool is scoped to the organization (default: true)
+  organization_scoped  = true
+}
+
+# Generate an agent token for authentication with the agent pool
+resource "tfe_agent_token" "next-agent-token" {
+  # Specifies the ID of the agent pool to associate the token with
+  agent_pool_id = tfe_agent_pool.next-agent-pool.id
+  
+  # Provides a description for the agent token
+  description   = "next-agent-token"
+}
+
+resource "tfe_organization_default_settings" "org_default" {
+  organization           = tfe_organization.Org.name
+  default_execution_mode = "agent"
+  default_agent_pool_id  = tfe_agent_pool.next-agent-pool.id
 }
 
 resource "tfe_variable_set" "next_credentials" {
