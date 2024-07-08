@@ -34,6 +34,7 @@ cat payload.json
 }
 ```
 
+```
 
 token=$(curl -ks --location 'https://10.1.1.5/api/login' \
 --header 'Content-Type: application/json' \
@@ -43,3 +44,4 @@ token=$(curl -ks --location 'https://10.1.1.5/api/login' \
 }' | jq -r '.access_token')
 
 echo $token
+```
